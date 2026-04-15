@@ -1,6 +1,6 @@
 package com.elitec.kingelectronics.feature.account.domain.repository
 
-import com.elitec.kingelectronics.feature.account.data.User
+import com.elitec.kingelectronics.feature.account.domain.entity.User
 
 interface AccountsRepository {
     suspend fun save(newAccount: User)
