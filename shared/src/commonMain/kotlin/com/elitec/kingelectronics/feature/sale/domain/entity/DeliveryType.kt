@@ -1,0 +1,6 @@
+package com.elitec.kingelectronics.feature.sale.domain.entity
+
+enum class DeliveryType {
+    PICKUP,   // El cliente va a recogerlo al taller
+    DELIVERY  // El cliente solicita domicilio (el taller coordina)
+}
