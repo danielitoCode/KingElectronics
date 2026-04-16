@@ -2,7 +2,8 @@ package com.elitec.kingelectronics.feature.sale.domain.entity
 
 data class Sale(
     val id: String,
-    val date: LocalDate,
+    // val date: LocalDate,
+    val date: String,
     val amount: Double,
     val verified: BuyState,
     val products: List<SaleItem>,
