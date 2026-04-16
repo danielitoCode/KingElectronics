@@ -7,7 +7,8 @@ import com.elitec.kingelectronics.feature.sale.domain.entity.SaleItem
 
 data class SaleDto(
     val id: String,
-    val date: LocalDate,
+    // val date: LocalDate,
+    val date: String,
     val amount: Double,
     val verified: String,
     val products: String,
