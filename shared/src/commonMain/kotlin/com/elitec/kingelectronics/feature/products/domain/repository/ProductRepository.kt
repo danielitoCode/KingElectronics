@@ -7,5 +7,6 @@ interface ProductRepository {
     suspend fun modify(productId: Long, modifiedProduct: Product)
     suspend fun getProductById(productId: Long): Product?
     suspend fun getAllProducts(): List<Product>
+    suspend fun getAllProductWithPaging(index: Int): List<Product>
     suspend fun deleteProduct(productId: Long)
 }
