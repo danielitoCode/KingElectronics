@@ -20,4 +20,21 @@ dependencies {
     implementation(libs.ktor.serverNetty)
     testImplementation(libs.ktor.serverTestHost)
     testImplementation(libs.kotlin.testJunit)
+
+    // Content negociation
+    implementation(libs.ktor.serializationJson)
+    implementation(libs.ktor.server.content.negotiation)
+    implementation(libs.ktor.server.auth)
+    implementation(libs.ktor.server.status.pages)
+    implementation(libs.ktor.server.sessions)
+    // Persistence
+    implementation(libs.exposed.core)
+    implementation(libs.exposed.jdbc)
+    implementation(libs.h2)
+    // DI
+    //implementation(platform("io.insert-koin:koin-bom: 4.1.1"))
+    // Koin for Ktor
+    implementation("io.insert-koin:koin-ktor:4.1.2-Beta1")
+    // SLF4J Logger
+    implementation("io.insert-koin:koin-logger-slf4j:4.1.2-Beta1")
 }

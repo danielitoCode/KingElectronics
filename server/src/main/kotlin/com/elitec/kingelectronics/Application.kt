@@ -1,5 +1,6 @@
 package com.elitec.kingelectronics
 
+import com.elitec.kingelectronics.core.configureFrameworks
 import io.ktor.server.application.*
 import io.ktor.server.engine.*
 import io.ktor.server.netty.*
@@ -12,6 +13,7 @@ fun main() {
 }
 
 fun Application.module() {
+    configureFrameworks()
     routing {
         get("/") {
             call.respondText("Ktor: ${Greeting().greet()}")
