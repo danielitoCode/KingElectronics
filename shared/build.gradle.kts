@@ -1,9 +1,11 @@
+import org.gradle.kotlin.dsl.implementation
 import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
     alias(libs.plugins.androidLibrary)
+    alias(libs.plugins.kotlin.plugin.serialization)
 }
 
 kotlin {
@@ -26,6 +28,8 @@ kotlin {
     
     sourceSets {
         commonMain.dependencies {
+            // Serialization
+            implementation(libs.kotlinx.serialization.json)
             // put your Multiplatform dependencies here
         }
         commonTest.dependencies {

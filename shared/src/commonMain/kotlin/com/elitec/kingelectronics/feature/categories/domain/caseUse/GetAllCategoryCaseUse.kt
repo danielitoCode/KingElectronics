@@ -7,6 +7,6 @@ class GetAllCategoryCaseUse(
     private val repository: CategoryRepository
 ) {
     suspend operator fun invoke(): Result<List<Category>> = runCatching {
-        repository.getAllCategories()
+        repository.getAll()
     }
 }

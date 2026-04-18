@@ -7,6 +7,6 @@ class GetCategoryByIdCaseUse(
     private val repository: CategoryRepository
 ) {
     suspend operator fun invoke(categoryId: Long): Result<Category?> = runCatching {
-        repository.getCategoryById(categoryId)
+        repository.getById(categoryId)
     }
 }
