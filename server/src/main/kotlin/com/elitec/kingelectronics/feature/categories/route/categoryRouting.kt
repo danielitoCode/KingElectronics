@@ -45,7 +45,7 @@ fun Application.categoryRoutes() {
             }
 
             get("/limit/{limit}") {
-                val limit = call.inspectLimit() ?: 20
+                val limit = call.inspectLimit()
                 val offset = call.request.queryParameters["offset"]?.toLongOrNull() ?: 0
                 val categories = getAllWithLimit(limit,offset)
 
