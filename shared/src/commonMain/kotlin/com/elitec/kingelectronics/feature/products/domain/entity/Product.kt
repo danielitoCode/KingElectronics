@@ -1,17 +1,16 @@
 package com.elitec.kingelectronics.feature.products.domain.entity
 
 data class Product(
-    val id: String,
+    val id: Long,
     val name: String,
     val description: String,
     val price: Double,
     val photoUrl: String,
-    val categoryId: String,
+    val categoryId: Long,
     val rating: Double = 0.0,
     val photoLocalResource: Int? = null
 ) {
     init {
-        require(id != "") { "The value of product identifier cant not by empty" }
         require(price >= 0.0) { "The price of product identifier cant not by a negative" }
     }
 }

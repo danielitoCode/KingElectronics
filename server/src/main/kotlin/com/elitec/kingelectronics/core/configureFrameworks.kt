@@ -1,6 +1,8 @@
 package com.elitec.kingelectronics.core
 
 
+import com.elitec.kingelectronics.feature.categories.di.categoryDiModule
+import com.elitec.kingelectronics.feature.products.di.productDiModule
 import com.elitec.kingelectronics.infraestructure.di.infrastructureModule
 import io.ktor.http.HttpStatusCode
 import io.ktor.server.application.*
@@ -14,7 +16,9 @@ fun Application.configureFrameworks() {
     install(Koin) {
         slf4jLogger()
         modules(
-            infrastructureModule
+            infrastructureModule,
+            categoryDiModule,
+            productDiModule
         )
     }
     install(StatusPages) {
