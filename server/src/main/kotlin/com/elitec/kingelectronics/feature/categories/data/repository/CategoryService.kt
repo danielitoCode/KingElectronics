@@ -1,85 +1,81 @@
 package com.elitec.kingelectronics.feature.categories.data.repository
 
 import com.elitec.kingelectronics.feature.categories.data.dto.CategoryDto
-import kotlinx.coroutines.Dispatchers
-import org.jetbrains.exposed.v1.core.Table
+import io.ktor.server.plugins.NotFoundException
+import org.jetbrains.exposed.v1.core.Expression
 import org.jetbrains.exposed.v1.core.eq
 import org.jetbrains.exposed.v1.jdbc.Database
 import org.jetbrains.exposed.v1.jdbc.SchemaUtils
 import org.jetbrains.exposed.v1.jdbc.deleteWhere
 import org.jetbrains.exposed.v1.jdbc.insert
+import org.jetbrains.exposed.v1.jdbc.select
 import org.jetbrains.exposed.v1.jdbc.selectAll
-import org.jetbrains.exposed.v1.jdbc.transactions.experimental.newSuspendedTransaction
 import org.jetbrains.exposed.v1.jdbc.transactions.suspendTransaction
 import org.jetbrains.exposed.v1.jdbc.transactions.transaction
 import org.jetbrains.exposed.v1.jdbc.update
-import org.koin.core.qualifier.named
-import kotlin.collections.get
-import kotlin.text.category
-import kotlin.text.set
 
 class CategoryService(
     private val db: Database
 ) {
-    object Category: Table() {
-        val id = long("id").autoIncrement()
-        val name = varchar("name", length = 50)
-        val iconUrl = varchar("icon_url", length = 255)
-
-        override val primaryKey = PrimaryKey(id)
-    }
-
     init {
         transaction(db) {
-            SchemaUtils.create(Category)
+            SchemaUtils.create(CategoryTable)
         }
     }
 
     suspend fun create(category: CategoryDto): Long = dbQuery {
-        Category.insert {
+        CategoryTable.insert {
             it[name] = category.name
             it[iconUrl] = category.iconUrl ?: ""
-        } [Category.id]
+        } [CategoryTable.id]
     }
 
     suspend fun read(id: Long): CategoryDto? = dbQuery {
-        Category.selectAll()
-            .where { Category.id eq id }
+        CategoryTable
+            .select(CategoryTable.id eq id)
             .map {
                 CategoryDto(
-                    id = it[Category.id],
-                    name = it[Category.name],
-                    iconUrl = it[Category.iconUrl]
+                    id = it[CategoryTable.id],
+                    name = it[CategoryTable.name],
+                    iconUrl = it[CategoryTable.iconUrl]
                 )
             }
             .singleOrNull()
     }
 
     suspend fun readAll(): List<CategoryDto> = dbQuery {
-        Category.selectAll()
+        CategoryTable.selectAll()
             .map {
                 CategoryDto(
-                    id = it[Category.id],
-                    name = it[Category.name],
-                    iconUrl = it[Category.iconUrl]
+                    id = it[CategoryTable.id],
+                    name = it[CategoryTable.name],
+                    iconUrl = it[CategoryTable.iconUrl]
                 )
             }
     }
 
     suspend fun update(id: Long, category: CategoryDto) {
         dbQuery {
-            Category.update(
-                { Category.id eq id }
+            val updatedRows = CategoryTable.update(
+                { CategoryTable.id eq id }
             ) {
                 it[name] = category.name
                 it[iconUrl] = category.iconUrl ?: ""
+            }
+
+            if (updatedRows == 0) {
+                throw NoSuchElementException("Category with id $id not found")
             }
         }
     }
 
     suspend fun delete(id: Long) {
         dbQuery {
-            Category.deleteWhere { Category.id.eq(id) }
+            val deletedRows = CategoryTable.deleteWhere { CategoryTable.id eq id }
+
+            if (deletedRows == 0) {
+                throw NotFoundException("Category with id $id not found")
+            }
         }
     }
 

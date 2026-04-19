@@ -5,9 +5,11 @@ import com.elitec.kingelectronics.feature.categories.domain.caseUse.GetAllCatego
 import com.elitec.kingelectronics.feature.categories.domain.caseUse.GetCategoryByIdCaseUse
 import com.elitec.kingelectronics.feature.categories.domain.caseUse.ModifyCategoryCaseUse
 import com.elitec.kingelectronics.feature.categories.domain.caseUse.SaveNewCategoryCaseUse
+import com.elitec.kingelectronics.feature.categories.domain.entity.Category
 import com.elitec.kingelectronics.feature.categories.route.models.CategoryModel
 import com.elitec.kingelectronics.feature.categories.route.models.CategoryModel.Companion.fromRouting
 import com.elitec.kingelectronics.feature.categories.route.models.CategoryModel.Companion.toRouting
+import com.elitec.kingelectronics.infraestructure.routing.helper.requireId
 import io.ktor.http.HttpStatusCode
 import io.ktor.server.application.Application
 import io.ktor.server.request.receive
@@ -17,69 +19,55 @@ import io.ktor.server.routing.delete
 import io.ktor.server.routing.get
 import io.ktor.server.routing.post
 import io.ktor.server.routing.put
+import io.ktor.server.routing.route
 import io.ktor.server.routing.routing
+import jdk.internal.net.http.common.Log.logError
 import org.koin.ktor.ext.inject
 
-fun Application.categoryRoutes(): RoutingRoot =
+fun Application.categoryRoutes() {
+    val getAll: GetAllCategoryCaseUse by inject()
+    val getById: GetCategoryByIdCaseUse by inject()
+    val save: SaveNewCategoryCaseUse by inject()
+    val modify: ModifyCategoryCaseUse by inject()
+    val delete: DeleteCategoryCaseUse by inject()
+
     routing {
-        get("/category") {
-            val getAllCategoryCaseUse =  call.inject<GetAllCategoryCaseUse>().value
-            getAllCategoryCaseUse()
-                .onSuccess {
-                    call.respond(HttpStatusCode.OK, it.map { data-> data.toRouting() })
-                }
-                .onFailure {
-                    call.respond(HttpStatusCode.InternalServerError)
-                }
-        }
+        route("/category") {
+            get {
+                val categories = getAll()
+                call.respond(HttpStatusCode.OK, categories)
+            }
 
-        get("/category/{id}") {
-            val id = call.parameters["id"]?.toLong() ?: throw IllegalArgumentException("Invalid ID")
-            val getCategoryByIdCaseUse =  call.inject<GetCategoryByIdCaseUse>().value
-            getCategoryByIdCaseUse(id)
-                .onSuccess { result ->
-                    if (result == null) call.respond(HttpStatusCode.NotFound)
-                    call.respond(HttpStatusCode.OK, result!!.toRouting())
-                }
-                .onFailure {
-                    call.respond(HttpStatusCode.InternalServerError)
-                }
-        }
+            get("/{id}") {
+                val id = call.requireId()
+                val category = getById(id)
 
-        delete("/category/{id}") {
-            val id = call.parameters["id"]?.toLong() ?: throw IllegalArgumentException("Invalid ID")
-            val deleteCategoryCaseUse =  call.inject< DeleteCategoryCaseUse>().value
-            deleteCategoryCaseUse(id)
-                .onSuccess {
-                    call.respond(HttpStatusCode.OK)
-                }
-                .onFailure {
-                    call.respond(HttpStatusCode.InternalServerError)
-                }
-        }
+                call.respond(HttpStatusCode.OK, category)
+            }
 
-        post("/category") {
-            val newCategory = call.receive<CategoryModel>().fromRouting()
-            val saveCategoryCaseUse =  call.inject<SaveNewCategoryCaseUse>().value
-            saveCategoryCaseUse(newCategory)
-                .onSuccess { createdId ->
-                    call.respond(HttpStatusCode.OK, createdId)
-                }
-                .onFailure {
-                    call.respond(HttpStatusCode.InternalServerError)
-                }
-        }
+            post {
+                val body = call.receive<Category>()
+                val id = save(body)
 
-        put("/category/{id}") {
-            val id = call.parameters["id"]?.toLong() ?: throw IllegalArgumentException("Invalid ID")
-            val modifiedCategory = call.receive<CategoryModel>().fromRouting()
-            val modifyCategoryCaseUse =  call.inject<ModifyCategoryCaseUse>().value
-            modifyCategoryCaseUse(id, modifiedCategory)
-                .onSuccess {
-                    call.respond(HttpStatusCode.OK)
-                }
-                .onFailure {
-                    call.respond(HttpStatusCode.InternalServerError)
-                }
+                call.respond(HttpStatusCode.Created, id)
+            }
+
+            put("/{id}") {
+                val id = call.requireId()
+                val body = call.receive<Category>()
+
+                modify(id, body)
+
+                call.respond(HttpStatusCode.OK)
+            }
+
+            delete("/{id}") {
+                val id = call.requireId()
+
+                delete(id)
+
+                call.respond(HttpStatusCode.NoContent)
+            }
         }
     }
+}
