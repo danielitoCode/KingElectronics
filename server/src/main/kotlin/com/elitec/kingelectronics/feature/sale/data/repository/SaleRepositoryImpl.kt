@@ -6,28 +6,28 @@ import com.elitec.kingelectronics.feature.sale.domain.entity.Sale
 import com.elitec.kingelectronics.feature.sale.domain.repository.SaleRepository
 
 class SaleRepositoryImpl(
-    private val saleService: SaleService
+    private val salesDataSource: SalesDataSource
 ): SaleRepository {
     override suspend fun save(newSale: Sale): Long =
-        saleService.create(newSale.toData())
+        salesDataSource.create(newSale.toData())
 
     override suspend fun modify(
         saleId: Long,
         modifiedSale: Sale,
     ) {
-        saleService.update(saleId,modifiedSale.toData())
+        salesDataSource.update(saleId,modifiedSale.toData())
     }
 
     override suspend fun getSaleById(saleId: Long): Sale? =
-        saleService.read(saleId)?.toDomain()
+        salesDataSource.read(saleId)?.toDomain()
 
-    override suspend fun getSaleByIndex(index: Int): List<Sale> =
-        TODO("Not yet implemented")
+    override suspend fun getAll(limit: Int, offset: Long, ): List<Sale>  =
+        salesDataSource.getAll(limit,offset).map { it.toDomain() }
 
     override suspend fun getAllSales(): List<Sale> =
-        saleService.readAll().map { it.toDomain() }
+        salesDataSource.readAll().map { it.toDomain() }
 
     override suspend fun deleteSale(saleId: Long) {
-        saleService.delete(saleId)
+        salesDataSource.delete(saleId)
     }
 }

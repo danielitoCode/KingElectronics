@@ -6,24 +6,27 @@ import com.elitec.kingelectronics.feature.categories.domain.entity.Category
 import com.elitec.kingelectronics.feature.categories.domain.repository.CategoryRepository
 
 class CategoryRepositoryImpl(
-    private val categoryTable: CategoryService
+    private val categoryDataSource: CategoryDataSource
 ): CategoryRepository {
     override suspend fun save(newCategory: Category): Long =
-        categoryTable.create(
+        categoryDataSource.create(
             newCategory.toData()
         )
 
     override suspend fun modify(categoryId: Long, modifiedCategory: Category) {
-        categoryTable.update(categoryId,modifiedCategory.toData())
+        categoryDataSource.update(categoryId,modifiedCategory.toData())
     }
 
     override suspend fun delete(categoryId: Long) {
-        categoryTable.delete(categoryId)
+        categoryDataSource.delete(categoryId)
     }
 
     override suspend fun getById(categoryId: Long): Category? =
-        categoryTable.read(categoryId)?.toDomain()
+        categoryDataSource.read(categoryId)?.toDomain()
 
     override suspend fun getAll(): List<Category> =
-        categoryTable.readAll().map { it.toDomain() }
+        categoryDataSource.readAll().map { it.toDomain() }
+
+    override suspend fun getAll(limit: Int, offset: Long, ): List<Category> =
+        categoryDataSource.getAll(limit, offset).map { it.toDomain() }
 }

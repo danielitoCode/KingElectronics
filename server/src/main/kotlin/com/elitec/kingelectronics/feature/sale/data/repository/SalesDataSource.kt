@@ -1,7 +1,6 @@
 package com.elitec.kingelectronics.feature.sale.data.repository
 
 import com.elitec.kingelectronics.feature.sale.data.dto.SaleDto
-import org.jetbrains.exposed.v1.core.Table
 import org.jetbrains.exposed.v1.core.eq
 import org.jetbrains.exposed.v1.jdbc.Database
 import org.jetbrains.exposed.v1.jdbc.SchemaUtils
@@ -13,7 +12,7 @@ import org.jetbrains.exposed.v1.jdbc.transactions.suspendTransaction
 import org.jetbrains.exposed.v1.jdbc.transactions.transaction
 import org.jetbrains.exposed.v1.jdbc.update
 
-class SaleService(
+class SalesDataSource(
     private val db: Database
 ) {
     init {
@@ -56,6 +55,26 @@ class SaleService(
 
     suspend fun readAll(): List<SaleDto> = dbQuery {
         SaleTable.selectAll()
+            .map {
+                SaleDto(
+                    id = it[SaleTable.id],
+                    date = it[SaleTable.date],
+                    amount = it[SaleTable.amount],
+                    verified = it[SaleTable.verified],
+                    products = it[SaleTable.products],
+                    userId = it[SaleTable.userId],
+                    customerName = it[SaleTable.customerName],
+                    deliveryType = it[SaleTable.deliveryType],
+                    deliveryAddress = it[SaleTable.deliveryAddress]
+                )
+            }
+    }
+
+    suspend fun getAll(limit: Int, offset: Long): List<SaleDto> = dbQuery {
+        SaleTable
+            .selectAll()
+            .limit(limit)
+            .offset(offset)
             .map {
                 SaleDto(
                     id = it[SaleTable.id],

@@ -1,9 +1,10 @@
 package com.elitec.kingelectronics.feature.categories.di
 
 import com.elitec.kingelectronics.feature.categories.data.repository.CategoryRepositoryImpl
-import com.elitec.kingelectronics.feature.categories.data.repository.CategoryService
+import com.elitec.kingelectronics.feature.categories.data.repository.CategoryDataSource
 import com.elitec.kingelectronics.feature.categories.domain.caseUse.DeleteCategoryCaseUse
 import com.elitec.kingelectronics.feature.categories.domain.caseUse.GetAllCategoryCaseUse
+import com.elitec.kingelectronics.feature.categories.domain.caseUse.GetAllCategoryWithLimitCaseUse
 import com.elitec.kingelectronics.feature.categories.domain.caseUse.GetCategoryByIdCaseUse
 import com.elitec.kingelectronics.feature.categories.domain.caseUse.ModifyCategoryCaseUse
 import com.elitec.kingelectronics.feature.categories.domain.caseUse.SaveNewCategoryCaseUse
@@ -11,7 +12,7 @@ import com.elitec.kingelectronics.feature.categories.domain.repository.CategoryR
 import org.koin.dsl.module
 
 val categoryDiModule = module {
-    single { CategoryService(get()) }
+    single { CategoryDataSource(get()) }
     single<CategoryRepository> { CategoryRepositoryImpl(get()) }
 
     factory { DeleteCategoryCaseUse(get()) }
@@ -19,4 +20,5 @@ val categoryDiModule = module {
     factory { GetCategoryByIdCaseUse(get()) }
     factory { ModifyCategoryCaseUse(get()) }
     factory { SaveNewCategoryCaseUse(get()) }
+    factory { GetAllCategoryWithLimitCaseUse(get()) }
 }

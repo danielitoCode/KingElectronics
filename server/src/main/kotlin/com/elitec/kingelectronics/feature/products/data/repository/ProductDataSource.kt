@@ -1,5 +1,7 @@
 package com.elitec.kingelectronics.feature.products.data.repository
 
+import com.elitec.kingelectronics.feature.categories.data.dto.CategoryDto
+import com.elitec.kingelectronics.feature.categories.data.repository.CategoryTable
 import com.elitec.kingelectronics.feature.products.data.dto.ProductDto
 import org.jetbrains.exposed.v1.core.eq
 import org.jetbrains.exposed.v1.jdbc.Database
@@ -12,7 +14,7 @@ import org.jetbrains.exposed.v1.jdbc.transactions.suspendTransaction
 import org.jetbrains.exposed.v1.jdbc.transactions.transaction
 import org.jetbrains.exposed.v1.jdbc.update
 
-class ProductService(
+class ProductDataSource(
     private val db: Database
 ) {
     init {
@@ -47,6 +49,24 @@ class ProductService(
                 )
             }
             .singleOrNull()
+    }
+
+    suspend fun getAll(limit: Int, offset: Long): List<ProductDto> = dbQuery {
+        ProductTable
+            .selectAll()
+            .limit(limit)
+            .offset(offset)
+            .map {
+                ProductDto(
+                    id = it[ProductTable.id],
+                    name = it[ProductTable.name],
+                    price = it[ProductTable.price],
+                    description = it[ProductTable.description],
+                    photoUrl = it[ProductTable.photoUrl],
+                    rating = it[ProductTable.rating],
+                    categoryId = it[ProductTable.categoryId]
+                )
+            }
     }
 
     suspend fun readAll(): List<ProductDto> = dbQuery {

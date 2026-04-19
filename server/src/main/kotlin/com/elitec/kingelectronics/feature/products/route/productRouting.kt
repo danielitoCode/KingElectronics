@@ -2,10 +2,12 @@ package com.elitec.kingelectronics.feature.products.route
 
 import com.elitec.kingelectronics.feature.products.domain.caseUse.DeleteProductCaseUse
 import com.elitec.kingelectronics.feature.products.domain.caseUse.GetAllProductCaseUse
+import com.elitec.kingelectronics.feature.products.domain.caseUse.GetAllProductWithLimitsCaseUse
 import com.elitec.kingelectronics.feature.products.domain.caseUse.GetProductByIdCaseUse
 import com.elitec.kingelectronics.feature.products.domain.caseUse.ModifyExistingProductCaseUse
 import com.elitec.kingelectronics.feature.products.domain.caseUse.SaveNewProductCaseUse
 import com.elitec.kingelectronics.feature.products.domain.entity.Product
+import com.elitec.kingelectronics.infraestructure.routing.helper.inspectLimit
 import com.elitec.kingelectronics.infraestructure.routing.helper.requireId
 import io.ktor.http.HttpStatusCode
 import io.ktor.server.application.Application
@@ -22,6 +24,7 @@ import org.koin.ktor.ext.inject
 
 fun Application.productsRoutes() {
     val getAll: GetAllProductCaseUse by inject()
+    val getAllWithLimit: GetAllProductWithLimitsCaseUse by inject()
     val getById: GetProductByIdCaseUse by inject()
     val save: SaveNewProductCaseUse by inject()
     val modify: ModifyExistingProductCaseUse by inject()
@@ -40,6 +43,14 @@ fun Application.productsRoutes() {
                 val product = getById(id) ?: throw NotFoundException("Product with id $id not found")
 
                 call.respond(HttpStatusCode.OK, product)
+            }
+
+            get("/limit/{limit}") {
+                val limit = call.inspectLimit() ?: 20
+                val offset = call.request.queryParameters["offset"]?.toLongOrNull() ?: 0
+                val products = getAllWithLimit(limit,offset)
+
+                call.respond(HttpStatusCode.OK, products)
             }
 
             delete("/{id}") {

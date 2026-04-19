@@ -2,7 +2,6 @@ package com.elitec.kingelectronics.feature.categories.data.repository
 
 import com.elitec.kingelectronics.feature.categories.data.dto.CategoryDto
 import io.ktor.server.plugins.NotFoundException
-import org.jetbrains.exposed.v1.core.Expression
 import org.jetbrains.exposed.v1.core.eq
 import org.jetbrains.exposed.v1.jdbc.Database
 import org.jetbrains.exposed.v1.jdbc.SchemaUtils
@@ -14,7 +13,7 @@ import org.jetbrains.exposed.v1.jdbc.transactions.suspendTransaction
 import org.jetbrains.exposed.v1.jdbc.transactions.transaction
 import org.jetbrains.exposed.v1.jdbc.update
 
-class CategoryService(
+class CategoryDataSource(
     private val db: Database
 ) {
     init {
@@ -41,6 +40,20 @@ class CategoryService(
                 )
             }
             .singleOrNull()
+    }
+
+    suspend fun getAll(limit: Int, offset: Long): List<CategoryDto> = dbQuery {
+        CategoryTable
+            .selectAll()
+            .limit(limit)
+            .offset(offset)
+            .map {
+                CategoryDto(
+                    id = it[CategoryTable.id],
+                    name = it[CategoryTable.name],
+                    iconUrl = it[CategoryTable.iconUrl]
+                )
+            }
     }
 
     suspend fun readAll(): List<CategoryDto> = dbQuery {
