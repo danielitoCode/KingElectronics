@@ -6,7 +6,5 @@ import com.elitec.kingelectronics.feature.categories.domain.repository.CategoryR
 class SaveNewCategoryCaseUse(
     private val repository: CategoryRepository
 ) {
-    suspend operator fun invoke(newCategory: Category): Result<Unit> = runCatching {
-        repository.save(newCategory)
-    }
+    suspend operator fun invoke(newCategory: Category) = repository.save(newCategory)
 }

@@ -6,10 +6,6 @@ import com.elitec.kingelectronics.feature.products.domain.repository.ProductRepo
 class ModifyExistingProductCaseUse(
     private val repository: ProductRepository
 ) {
-    suspend operator fun invoke(
-        productId: Long,
-        modifiedProduct: Product
-    ): Result<Unit> = runCatching {
+    suspend operator fun invoke(productId: Long, modifiedProduct: Product) =
         repository.modify(productId, modifiedProduct)
-    }
 }

@@ -6,7 +6,5 @@ import com.elitec.kingelectronics.feature.products.domain.repository.ProductRepo
 class GetAllProductCaseUse(
     private val repository: ProductRepository
 ) {
-    suspend operator fun invoke(): Result<List<Product>> = runCatching {
-        repository.getAllProducts()
-    }
+    suspend operator fun invoke(): List<Product> = repository.getAllProducts()
 }

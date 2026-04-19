@@ -5,7 +5,5 @@ import com.elitec.kingelectronics.feature.products.domain.repository.ProductRepo
 class DeleteProductCaseUse(
     private val repository: ProductRepository
 ) {
-    suspend operator fun invoke(productId: Long): Result<Unit> = runCatching {
-        repository.deleteProduct(productId)
-    }
+    suspend operator fun invoke(productId: Long) = repository.deleteProduct(productId)
 }

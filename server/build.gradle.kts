@@ -31,6 +31,10 @@ dependencies {
     implementation(libs.exposed.core)
     implementation(libs.exposed.jdbc)
     implementation(libs.h2)
+
+    // Kotlin HTML Dsl
+    implementation(libs.kotlinx.html)
+    implementation(libs.ktor.server.html.builder)
     // DI
     //implementation(platform("io.insert-koin:koin-bom: 4.1.1"))
     // Koin for Ktor

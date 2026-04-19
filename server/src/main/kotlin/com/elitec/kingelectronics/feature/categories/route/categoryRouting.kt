@@ -6,22 +6,18 @@ import com.elitec.kingelectronics.feature.categories.domain.caseUse.GetCategoryB
 import com.elitec.kingelectronics.feature.categories.domain.caseUse.ModifyCategoryCaseUse
 import com.elitec.kingelectronics.feature.categories.domain.caseUse.SaveNewCategoryCaseUse
 import com.elitec.kingelectronics.feature.categories.domain.entity.Category
-import com.elitec.kingelectronics.feature.categories.route.models.CategoryModel
-import com.elitec.kingelectronics.feature.categories.route.models.CategoryModel.Companion.fromRouting
-import com.elitec.kingelectronics.feature.categories.route.models.CategoryModel.Companion.toRouting
 import com.elitec.kingelectronics.infraestructure.routing.helper.requireId
 import io.ktor.http.HttpStatusCode
 import io.ktor.server.application.Application
+import io.ktor.server.plugins.NotFoundException
 import io.ktor.server.request.receive
 import io.ktor.server.response.respond
-import io.ktor.server.routing.RoutingRoot
 import io.ktor.server.routing.delete
 import io.ktor.server.routing.get
 import io.ktor.server.routing.post
 import io.ktor.server.routing.put
 import io.ktor.server.routing.route
 import io.ktor.server.routing.routing
-import jdk.internal.net.http.common.Log.logError
 import org.koin.ktor.ext.inject
 
 fun Application.categoryRoutes() {
@@ -40,7 +36,7 @@ fun Application.categoryRoutes() {
 
             get("/{id}") {
                 val id = call.requireId()
-                val category = getById(id)
+                val category = getById(id) ?: throw NotFoundException("Category with id $id not found")
 
                 call.respond(HttpStatusCode.OK, category)
             }

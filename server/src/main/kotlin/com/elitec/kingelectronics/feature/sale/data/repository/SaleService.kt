@@ -7,6 +7,7 @@ import org.jetbrains.exposed.v1.jdbc.Database
 import org.jetbrains.exposed.v1.jdbc.SchemaUtils
 import org.jetbrains.exposed.v1.jdbc.deleteWhere
 import org.jetbrains.exposed.v1.jdbc.insert
+import org.jetbrains.exposed.v1.jdbc.select
 import org.jetbrains.exposed.v1.jdbc.selectAll
 import org.jetbrains.exposed.v1.jdbc.transactions.suspendTransaction
 import org.jetbrains.exposed.v1.jdbc.transactions.transaction
@@ -15,26 +16,14 @@ import org.jetbrains.exposed.v1.jdbc.update
 class SaleService(
     private val db: Database
 ) {
-    object Sale: Table() {
-        val id = long("id").autoIncrement()
-        val date = varchar("date", 100)
-        val amount = double("amount")
-        val verified = varchar("verified", 20)
-        val products = varchar("products", 1028)
-        val userId = long("user_id")
-        val customerName = varchar("customer_name", 255)
-        val deliveryType = varchar("delivery_type", 15)
-        val deliveryAddress = varchar("delivery_address", 510)
-    }
-
     init {
         transaction(db) {
-            SchemaUtils.create(Sale)
+            SchemaUtils.create(SaleTable)
         }
     }
 
     suspend fun create(sale: SaleDto): Long = dbQuery {
-        Sale.insert {
+        SaleTable.insert {
             it[date] = date
             it[amount] = amount
             it[verified] = verified
@@ -43,49 +32,49 @@ class SaleService(
             it[userId] = userId
             it[customerName] = customerName
             it[products] = products
-        } [Sale.id]
+        } [SaleTable.id]
     }
 
     suspend fun read(id: Long): SaleDto? = dbQuery {
-        Sale.selectAll()
-            .where { Sale.id eq id }
+        SaleTable
+            .select(SaleTable.id eq id)
             .map {
                 SaleDto(
-                    id = it[Sale.id],
-                    date = it[Sale.date],
-                    amount = it[Sale.amount],
-                    verified = it[Sale.verified],
-                    products = it[Sale.products],
-                    userId = it[Sale.userId],
-                    customerName = it[Sale.customerName],
-                    deliveryType = it[Sale.deliveryType],
-                    deliveryAddress = it[Sale.deliveryAddress]
+                    id = it[SaleTable.id],
+                    date = it[SaleTable.date],
+                    amount = it[SaleTable.amount],
+                    verified = it[SaleTable.verified],
+                    products = it[SaleTable.products],
+                    userId = it[SaleTable.userId],
+                    customerName = it[SaleTable.customerName],
+                    deliveryType = it[SaleTable.deliveryType],
+                    deliveryAddress = it[SaleTable.deliveryAddress]
                 )
             }
             .singleOrNull()
     }
 
     suspend fun readAll(): List<SaleDto> = dbQuery {
-        Sale.selectAll()
+        SaleTable.selectAll()
             .map {
                 SaleDto(
-                    id = it[Sale.id],
-                    date = it[Sale.date],
-                    amount = it[Sale.amount],
-                    verified = it[Sale.verified],
-                    products = it[Sale.products],
-                    userId = it[Sale.userId],
-                    customerName = it[Sale.customerName],
-                    deliveryType = it[Sale.deliveryType],
-                    deliveryAddress = it[Sale.deliveryAddress]
+                    id = it[SaleTable.id],
+                    date = it[SaleTable.date],
+                    amount = it[SaleTable.amount],
+                    verified = it[SaleTable.verified],
+                    products = it[SaleTable.products],
+                    userId = it[SaleTable.userId],
+                    customerName = it[SaleTable.customerName],
+                    deliveryType = it[SaleTable.deliveryType],
+                    deliveryAddress = it[SaleTable.deliveryAddress]
                 )
             }
     }
 
     suspend fun update(id: Long, sale: SaleDto) {
         dbQuery {
-            Sale.update(
-                { Sale.id eq id }
+            val updatedRow = SaleTable.update(
+                { SaleTable.id eq id }
             ) {
                 it[date] = date
                 it[amount] = amount
@@ -96,12 +85,20 @@ class SaleService(
                 it[customerName] = customerName
                 it[products] = products
             }
+
+            if (updatedRow == 0) {
+                throw NoSuchElementException("Sale with id $id not found")
+            }
         }
     }
 
     suspend fun delete(id: Long) {
         dbQuery {
-            Sale.deleteWhere { Sale.id.eq(id) }
+            val deletedRow = SaleTable.deleteWhere { SaleTable.id.eq(id) }
+
+            if (deletedRow == 0) {
+                throw NoSuchElementException("Sale with id $id not found")
+            }
         }
     }
 

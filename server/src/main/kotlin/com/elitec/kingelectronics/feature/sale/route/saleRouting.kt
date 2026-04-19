@@ -5,64 +5,53 @@ import com.elitec.kingelectronics.feature.sale.domain.caseUse.GetAllSaleCaseUse
 import com.elitec.kingelectronics.feature.sale.domain.caseUse.GetSaleByIdCaseUse
 import com.elitec.kingelectronics.feature.sale.domain.caseUse.SaveNewSaleCaseUse
 import com.elitec.kingelectronics.feature.sale.domain.entity.Sale
+import com.elitec.kingelectronics.infraestructure.routing.helper.requireId
 import io.ktor.http.HttpStatusCode
 import io.ktor.server.application.Application
+import io.ktor.server.plugins.NotFoundException
 import io.ktor.server.request.receive
 import io.ktor.server.response.respond
-import io.ktor.server.routing.RoutingRoot
 import io.ktor.server.routing.delete
 import io.ktor.server.routing.get
 import io.ktor.server.routing.post
+import io.ktor.server.routing.route
 import io.ktor.server.routing.routing
 import org.koin.ktor.ext.inject
 
-fun Application.saleRoutes(): RoutingRoot =
+fun Application.saleRoutes() {
+    val getAll: GetAllSaleCaseUse by inject()
+    val getById: GetSaleByIdCaseUse by inject()
+    val save: SaveNewSaleCaseUse by inject()
+    val delete: DeleteSaleCaseUse by inject()
+
     routing {
-        get("/sale") {
-            val getAllSalesCaseUse =  call.inject<GetAllSaleCaseUse>().value
-            getAllSalesCaseUse()
-                .onSuccess {
-                    call.respond(HttpStatusCode.OK, it)
-                }
-                .onFailure {
-                    call.respond(HttpStatusCode.InternalServerError)
-                }
-        }
+        route("/sale"){
+            get {
+                val sales = getAll()
 
-        get("/sale/{id}") {
-            val id = call.parameters["id"]?.toLong() ?: throw IllegalArgumentException("Invalid ID")
-            val getSaleByIdCaseUse =  call.inject<GetSaleByIdCaseUse>().value
-            getSaleByIdCaseUse(id)
-                .onSuccess { result ->
-                    if (result == null) call.respond(HttpStatusCode.NotFound)
-                    call.respond(HttpStatusCode.OK, result!!)
-                }
-                .onFailure {
-                    call.respond(HttpStatusCode.InternalServerError)
-                }
-        }
+                call.respond(HttpStatusCode.OK, sales)
+            }
 
-        delete("/sale/{id}") {
-            val id = call.parameters["id"]?.toLong() ?: throw IllegalArgumentException("Invalid ID")
-            val deleteSaleCaseUse =  call.inject<DeleteSaleCaseUse>().value
-            deleteSaleCaseUse(id)
-                .onSuccess {
-                    call.respond(HttpStatusCode.OK)
-                }
-                .onFailure {
-                    call.respond(HttpStatusCode.InternalServerError)
-                }
-        }
+            get("/{id}") {
+                val id = call.requireId()
+                val sale = getById(id) ?: throw NotFoundException("Sale with id $id not found")
 
-        post("/sale") {
-            val newSale = call.receive<Sale>()
-            val saveSaleCaseUse =  call.inject<SaveNewSaleCaseUse>().value
-            saveSaleCaseUse(newSale)
-                .onSuccess { createdId ->
-                    call.respond(HttpStatusCode.OK, createdId)
-                }
-                .onFailure {
-                    call.respond(HttpStatusCode.InternalServerError)
-                }
+                call.respond(HttpStatusCode.OK, sale)
+            }
+
+            delete("/{id}") {
+                val id = call.requireId()
+                delete(id)
+
+                call.respond(HttpStatusCode.OK)
+            }
+
+            post {
+                val newSale = call.receive<Sale>()
+                val createdId = save(newSale)
+
+                call.respond(HttpStatusCode.Created, createdId)
+            }
         }
     }
+}

@@ -6,7 +6,5 @@ import com.elitec.kingelectronics.feature.categories.domain.repository.CategoryR
 class GetCategoryByIdCaseUse(
     private val repository: CategoryRepository
 ) {
-    suspend operator fun invoke(categoryId: Long): Result<Category?> = runCatching {
-        repository.getById(categoryId)
-    }
+    suspend operator fun invoke(categoryId: Long): Category? = repository.getById(categoryId)
 }

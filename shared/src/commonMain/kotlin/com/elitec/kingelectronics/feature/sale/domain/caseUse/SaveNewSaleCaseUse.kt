@@ -6,7 +6,5 @@ import com.elitec.kingelectronics.feature.sale.domain.repository.SaleRepository
 class SaveNewSaleCaseUse(
     private val repository: SaleRepository
 ) {
-    suspend  operator fun invoke(newSale: Sale): Result<Unit> = runCatching {
-        repository.save(newSale)
-    }
+    suspend  operator fun invoke(newSale: Sale) = repository.save(newSale)
 }

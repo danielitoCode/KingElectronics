@@ -6,7 +6,6 @@ import com.elitec.kingelectronics.feature.sale.domain.repository.SaleRepository
 class GetSaleByIdCaseUse(
     private val repository: SaleRepository
 ) {
-    suspend operator fun invoke(saleId: Long): Result<Sale?> = runCatching {
-        repository.getSaleById(saleId)
-    }
+    suspend operator fun invoke(saleId: Long): Sale? = repository.getSaleById(saleId)
+
 }

@@ -6,10 +6,6 @@ import com.elitec.kingelectronics.feature.categories.domain.repository.CategoryR
 class ModifyCategoryCaseUse(
     private val repository: CategoryRepository
 ) {
-    suspend operator fun invoke(
-        categoryId: Long,
-        modifiedCategory: Category
-    ): Result<Unit> = runCatching {
+    suspend operator fun invoke(categoryId: Long, modifiedCategory: Category) =
         repository.modify(categoryId, modifiedCategory)
-    }
 }

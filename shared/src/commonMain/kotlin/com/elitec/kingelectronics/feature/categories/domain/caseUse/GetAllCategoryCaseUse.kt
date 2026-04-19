@@ -6,7 +6,5 @@ import com.elitec.kingelectronics.feature.categories.domain.repository.CategoryR
 class GetAllCategoryCaseUse(
     private val repository: CategoryRepository
 ) {
-    suspend operator fun invoke(): Result<List<Category>> = runCatching {
-        repository.getAll()
-    }
+    suspend operator fun invoke() = repository.getAll()
 }
