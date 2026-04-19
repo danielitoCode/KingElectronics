@@ -3,6 +3,7 @@ package com.elitec.kingelectronics.core
 
 import com.elitec.kingelectronics.feature.categories.di.categoryDiModule
 import com.elitec.kingelectronics.feature.products.di.productDiModule
+import com.elitec.kingelectronics.feature.sale.di.saleDiModule
 import com.elitec.kingelectronics.infraestructure.di.infrastructureModule
 import io.ktor.http.HttpStatusCode
 import io.ktor.server.application.*
@@ -18,7 +19,8 @@ fun Application.configureFrameworks() {
         modules(
             infrastructureModule,
             categoryDiModule,
-            productDiModule
+            productDiModule,
+            saleDiModule
         )
     }
     install(StatusPages) {
