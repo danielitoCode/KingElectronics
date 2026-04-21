@@ -1,5 +1,6 @@
 package com.elitec.kingelectronics.feature.sale.data.repository
 
+import com.elitec.kingelectronics.feature.categories.data.repository.CategoryTable
 import org.jetbrains.exposed.v1.core.Table
 
 object SaleTable: Table() {
@@ -12,4 +13,6 @@ object SaleTable: Table() {
     val customerName = varchar("customer_name", 255)
     val deliveryType = varchar("delivery_type", 15)
     val deliveryAddress = varchar("delivery_address", 510)
+
+    override val primaryKey = PrimaryKey(CategoryTable.id)
 }

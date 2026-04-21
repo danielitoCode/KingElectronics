@@ -1,16 +1,15 @@
-package com.elitec.kingelectronics.feature.products.data.repository
+package com.elitec.kingelectronics.feature.promotions.data.repository
 
 import com.elitec.kingelectronics.feature.categories.data.repository.CategoryTable
 import org.jetbrains.exposed.v1.core.Table
 
-object ProductTable : Table() {
+object PromotionTable: Table("promotion") {
     val id = long("id").autoIncrement()
-    val name = varchar("name",100)
+    val title = varchar("title", 100)
     val description = varchar("description", 255)
-    val price = double("price")
+    val oldPrice = double("old_price")
+    val newPrice = double("new_price")
     val photoUrl = varchar("photo_url", 255)
-    val categoryId = long("category_id")
-    val rating = double("rating")
 
     override val primaryKey = PrimaryKey(CategoryTable.id)
 }

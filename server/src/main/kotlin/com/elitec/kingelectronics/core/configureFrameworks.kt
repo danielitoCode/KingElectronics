@@ -1,7 +1,9 @@
 package com.elitec.kingelectronics.core
 
+import com.elitec.kingelectronics.feature.accounts.di.accountDiModule
 import com.elitec.kingelectronics.feature.categories.di.categoryDiModule
 import com.elitec.kingelectronics.feature.products.di.productDiModule
+import com.elitec.kingelectronics.feature.promotions.di.promotionDiModule
 import com.elitec.kingelectronics.feature.sale.di.saleDiModule
 import com.elitec.kingelectronics.infraestructure.di.infrastructureModule
 import com.elitec.kingelectronics.infraestructure.security.JwtConfig
@@ -36,7 +38,9 @@ fun Application.configureFrameworks() {
             infrastructureModule,
             categoryDiModule,
             productDiModule,
-            saleDiModule
+            saleDiModule,
+            accountDiModule,
+            promotionDiModule
         )
     }
     install(StatusPages) {
