@@ -24,9 +24,14 @@ dependencies {
     // Content negociation
     implementation(libs.ktor.serializationJson)
     implementation(libs.ktor.server.content.negotiation)
-    implementation(libs.ktor.server.auth)
     implementation(libs.ktor.server.status.pages)
+
+    implementation(libs.ktor.server.auth)
+    implementation(libs.ktor.server.auth.jwt)
     implementation(libs.ktor.server.sessions)
+
+    implementation(libs.ktor.client.cio)
+
     // Persistence
     implementation(libs.exposed.core)
     implementation(libs.exposed.jdbc)
@@ -41,4 +46,11 @@ dependencies {
     implementation("io.insert-koin:koin-ktor:4.1.2-Beta1")
     // SLF4J Logger
     implementation("io.insert-koin:koin-logger-slf4j:4.1.2-Beta1")
+
+    implementation("io.github.cdimascio:dotenv-kotlin:6.5.1")
+}
+
+
+tasks.withType<JavaExec> {
+    systemProperty("io.ktor.development", "true")
 }
