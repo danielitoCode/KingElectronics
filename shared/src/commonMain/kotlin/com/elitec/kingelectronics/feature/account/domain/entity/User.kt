@@ -1,7 +1,7 @@
 package com.elitec.kingelectronics.feature.account.domain.entity
 
 data class User (
-    val id: String,
+    val id: Long,
     val name: String,
     val email: String,
     val pass: String,

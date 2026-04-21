@@ -1,7 +1,7 @@
 package com.elitec.kingelectronics.feature.account.data.dto
 
 data class UserDto (
-    val id: String,
+    val id: Long,
     val name: String,
     val email: String,
     val pass: String,
