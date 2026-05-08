@@ -47,6 +47,7 @@ kotlin {
             implementation(libs.compose.material3)
             implementation(libs.compose.ui)
             implementation(libs.compose.components.resources)
+            implementation(compose.materialIconsExtended)
             implementation(libs.compose.uiToolingPreview)
             implementation(libs.androidx.lifecycle.viewmodelCompose)
             implementation(libs.androidx.lifecycle.runtimeCompose)
@@ -62,6 +63,9 @@ kotlin {
             implementation("io.insert-koin:koin-core")
             implementation("io.insert-koin:koin-compose")
             implementation("io.insert-koin:koin-compose-viewmodel")
+
+            // Ui resposive
+            implementation(libs.material3.adaptative)
 
         }
         commonTest.dependencies {

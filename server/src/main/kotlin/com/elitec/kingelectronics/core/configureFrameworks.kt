@@ -40,7 +40,7 @@ fun Application.configureFrameworks() {
             productDiModule,
             saleDiModule,
             accountDiModule,
-            promotionDiModule
+            promotionDiModule,
         )
     }
     install(StatusPages) {
